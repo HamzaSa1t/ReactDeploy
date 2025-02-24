@@ -7,11 +7,21 @@ function Home() {
     const [notes, setNotes] = useState([]);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+    cons [UserType, setUserType] = useState();
+
 
     
     useEffect(() => {
         getNotes();
     }, []);
+
+    useEffect(() => {
+        getType();
+    }, []);
+
+    const getType = () => {
+        
+    }
 
     const getNotes = () => {
         api 
