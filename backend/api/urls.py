@@ -55,6 +55,10 @@ urlpatterns = [
 
     # Optional: Include DRF’s browsable API login URLs
     path("api-auth/", include("rest_framework.urls")),
+
+    #User Details
+        path("UserDetails/", views.UserDetailView.as_view(), name="UserDetails"),
+
 ]
 
 

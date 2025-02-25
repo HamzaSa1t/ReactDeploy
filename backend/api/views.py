@@ -101,9 +101,11 @@ class CreateUserView(generics.CreateAPIView):
 
     @transaction.atomic # Check word doc
     def perform_create(self, serializer):
+      try:  
         user = serializer.save()                        # This line creates a new User object and saves it to the database, It returns the newly created User instance, which is then assigned to the user variable.
-        user_type = self.request.data.get("user_type")
-
+        profile_data = self.request.data.get("profile_user", {})
+        user_type = profile_data.get("user_type")
+        
         if not user_type:
             user.delete()
             raise ValidationError({"user_type": "This field is required."})
@@ -118,6 +120,18 @@ class CreateUserView(generics.CreateAPIView):
             Employee.objects.create(user=user)
         elif user_type == "Manager":
             Manager.objects.create(user=user)
+      except ValidationError as e:
+            # Handle the validation error and re-raise it for the response
+            raise e
+      except IntegrityError as e:
+            # Handle database integrity errors (e.g., unique constraint violations)
+            user.delete()
+            raise ValidationError({"error": "Database integrity error: " + str(e)})
+      except Exception as e:
+            # Catch any other unexpected errors and handle them
+            if user:
+                user.delete()  # Ensure the user is deleted if there's an unexpected error
+            raise ValidationError({"error": "An unexpected error occurred: " + str(e)})
 
 class UpdateCustomerAmountView(APIView):
 

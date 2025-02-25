@@ -5,13 +5,13 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/form.css"
 import LoadingIndicator from "./LoadingIndicator";
 
-function Form({ route, method }) {
+function LoginForm({ route, method }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [UserType, setUserType] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const name = method === "login" ? "Login" : "Register";
 
     const handleSubmit = async (e) => {
         setLoading(true);
@@ -19,13 +19,9 @@ function Form({ route, method }) {
 
         try {
             const res = await api.post(route, { username, password })
-            if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
                 navigate("/")
-            } else {
-                navigate("/login")
-            }
         } catch (error) {
             alert(error)
         } finally {
@@ -58,4 +54,4 @@ function Form({ route, method }) {
     );
 }
 
-export default Form
+export default LoginForm

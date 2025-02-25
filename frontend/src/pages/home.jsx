@@ -1,28 +1,31 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import Note from "../components/Note"
 import "../styles/Home.css"
 
 function Home() {
-    const [notes, setNotes] = useState([]);
-    const [content, setContent] = useState("");
-    const [title, setTitle] = useState("");
-    cons [UserType, setUserType] = useState();
+    const [UserType, setUserType] = useState();
 
-
-    
+/*  
     useEffect(() => {
         getNotes();
     }, []);
-
+*/
     useEffect(() => {
         getType();
     }, []);
 
     const getType = () => {
-        
-    }
+        api
+            .get("api/UserDetails/")
+            .then((res) => res.data.profile_user.user_type)
+            .then((user_type) => {
+                setUserType(user_type)
+                console.log(user_type);
+            })
+            .catch((err) => alert(err));
 
+    }
+/*
     const getNotes = () => {
         api 
             .get("/api/notes/")
@@ -33,7 +36,9 @@ function Home() {
             })
             .catch((err) => alert(err));
     };
+*/
 
+/*
     const deleteNote = (id) => {
         api
             .delete(`/api/notes/delete/${id}/`)
@@ -44,7 +49,9 @@ function Home() {
             })
             .catch((error) => alert(error));
     };
+*/
 
+/*
     const createNote = (e) => {
         e.preventDefault();
         api
@@ -56,39 +63,51 @@ function Home() {
             })
             .catch((err) => alert(err));
     };
+*/
+
+const CustomerHomePageContent = () => {
+
+    return <dev> 
+
+    <h1>CustomerHomePageContent</h1>
+
+
+    </dev>
+
+}
+
+const ManagerHomePageContent = () => {
+
+    return <dev> 
+
+    <h1>ManagerHomePageContent</h1>
+
+
+    </dev>
+
+}
+
+const EmployeeHomePageContent = () => {
+
+    return <dev> 
+
+    <h1>EmployeeHomePageContent</h1>
+
+
+    </dev>
+
+}
+
+const ContentComponent = UserType === 'customer' ? CustomerHomePageContent :
+UserType === 'manager' ? ManagerHomePageContent :
+UserType === 'employee' ? EmployeeHomePageContent :
+() => <p>Unknown user type.</p>; // Default component
 
     return (
         <div>
-            <div>
-                <h2>Notes</h2>
-                {notes.map((note) => (
-                    <Note note={note} onDelete={deleteNote} key={note.id} />
-                ))}
-            </div>
-            <h2>Create a Note</h2>
-            <form onSubmit={createNote}>
-                <label htmlFor="title">Title:</label>
-                <br />
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    required
-                    onChange={(e) => setTitle(e.target.value)}
-                    value={title}
-                />
-                <label htmlFor="content">Content:</label>
-                <br />
-                <textarea
-                    id="content"
-                    name="content"
-                    required
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                ></textarea>
-                <br />
-                <input type="submit" value="Submit"></input>
-            </form>
+        
+       < ContentComponent />
+        
         </div>
     );
 }
