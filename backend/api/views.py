@@ -69,14 +69,13 @@ class IsManagerOrEmployee(BasePermission):
     def has_permission(self, request, view):
                 return request.user.is_authenticated and (request.user.profile_user.user_type in ['manager', 'employee'])
 
-class UserType(generics.RetrieveAPIView):
+class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return  user.profile_user.user_type
+    def get_object(self):
+        return self.request.user
                      
 
             
@@ -109,15 +108,15 @@ class CreateUserView(generics.CreateAPIView):
             user.delete()
             raise ValidationError({"user_type": "This field is required."})
         
-        if user_type not in ["customer", "employee", "manager"]:            
+        if user_type not in ["Customer", "Employee", "Manager"]:            
             user.delete()
             raise ValidationError({"user_type": "Invalid user type."})
 
-        if user_type == "customer":
+        if user_type == "Customer":
             Customer.objects.create(user=user)
-        elif user_type == "employee":
+        elif user_type == "Employee":
             Employee.objects.create(user=user)
-        elif user_type == "manager":
+        elif user_type == "Manager":
             Manager.objects.create(user=user)
 
 class UpdateCustomerAmountView(APIView):

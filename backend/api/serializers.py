@@ -8,11 +8,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['user_type']
 
 class UserSerializer(serializers.ModelSerializer):
-    user_type = serializers.CharField(write_only = True)  # Add this line
+    profile_user = ProfileSerializer()  # Nested serializer
 
     class Meta:
         model = User
-        fields = ["id", "username", "password", "user_type"]  # Include user_type
+        fields = ["id", "username", "password", "profile_user"]  # Include user_type
         extra_kwargs = {"password": {"write_only": True}}
    
 
