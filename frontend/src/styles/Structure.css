@@ -1,0 +1,65 @@
+.header {
+  display: flex;
+  flex-direction: column;  /* Stack elements vertically */
+  align-items: center; /* Center all elements horizontally */
+  background-color: #4CAF50; /* Green background */
+  color: rgb(255, 255, 255);
+  padding-top: 1px;
+  margin-top: 0%;
+}
+div{
+  margin: 10;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+
+ h1 {
+  font-size: 2.5rem;
+margin-top: 2%;
+
+}
+
+
+.tagline {
+  font-size: 1.2rem;
+  color: #e0e0e0; /* Lighter text color for the tagline */
+  text-align: center; /* Center the tagline */
+  margin-top: 0px; /* Add space between the title and tagline */
+}
+
+/* .horizontal-list-container {
+  overflow-x: auto;
+  white-space: nowrap;
+} */
+
+.horizontal-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+}
+
+.horizontal-list-item {
+  padding: 10px 20px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.horizontal-list-item:hover {
+  background-color: #000000;
+}
+
+.list-link {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit color from parent */
+}
+
+
+
+
+

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import "../styles/Home.css"
+import "../components/Structure.jsx"
+import Structure from "../components/Structure.jsx";
 
 function Home() {
     const [UserType, setUserType] = useState();
@@ -67,45 +69,45 @@ function Home() {
 
 const CustomerHomePageContent = () => {
 
-    return <dev> 
+    return <div> 
 
-    <h1>CustomerHomePageContent</h1>
+    <h1>Customer Home Page Content</h1>
 
 
-    </dev>
+    </div>
 
 }
 
 const ManagerHomePageContent = () => {
 
-    return <dev> 
+    return <div> 
 
-    <h1>ManagerHomePageContent</h1>
+    <h1>Manager Home Page Content</h1>
 
 
-    </dev>
+    </div>
 
 }
 
 const EmployeeHomePageContent = () => {
 
-    return <dev> 
+    return <div> 
 
-    <h1>EmployeeHomePageContent</h1>
+    <h1>Employee Home Page Content</h1>
 
 
-    </dev>
+    </div>
 
 }
 
-const ContentComponent = UserType === 'customer' ? CustomerHomePageContent :
-UserType === 'manager' ? ManagerHomePageContent :
-UserType === 'employee' ? EmployeeHomePageContent :
+const ContentComponent = UserType === 'Customer' ? CustomerHomePageContent :
+UserType === 'Manager' ? ManagerHomePageContent :
+UserType === 'Employee' ? EmployeeHomePageContent :
 () => <p>Unknown user type.</p>; // Default component
 
     return (
         <div>
-        
+        <Structure/>
        < ContentComponent />
         
         </div>

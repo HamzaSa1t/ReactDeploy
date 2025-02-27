@@ -1,7 +1,49 @@
-import Form from "../components/Loginform"
+import LoginForm from "../components/Loginform"
+import { Link } from 'react-router-dom';
 
 function Login() {
-    return <Form route="/api/token/" method="login" />
+
+return(
+<div>
+
+
+
+
+
+
+<div>
+      <header className="header">   
+        <h1>Amazoo</h1>
+        <p className="tagline">We sell products you love!</p>
+
+        <p>
+
+          <Link to="/register">
+              Register
+            </Link>
+
+          </p>
+    </header>  
+     </div>
+
+
+<div> 
+<LoginForm/>
+</div>
+
+
+
+</div>
+
+    
+)
+
 }
 
+
+
 export default Login
+
+
+
+

@@ -47,6 +47,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
+import logging
+from django.db import IntegrityError
+
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -120,18 +126,26 @@ class CreateUserView(generics.CreateAPIView):
             Employee.objects.create(user=user)
         elif user_type == "Manager":
             Manager.objects.create(user=user)
+      
       except ValidationError as e:
             # Handle the validation error and re-raise it for the response
+            logger.error(f"ValidationError: {e}")
             raise e
       except IntegrityError as e:
             # Handle database integrity errors (e.g., unique constraint violations)
             user.delete()
+            logger.error(f"IntegrityError: str{e}")
             raise ValidationError({"error": "Database integrity error: " + str(e)})
+      except ValidationError as e:
+            # Handle and log the validation error
+            logger.error(f"ValidationError: {e}")
+            raise e  # Re-raise the validation error to send it to the frontend
       except Exception as e:
             # Catch any other unexpected errors and handle them
             if user:
                 user.delete()  # Ensure the user is deleted if there's an unexpected error
-            raise ValidationError({"error": "An unexpected error occurred: " + str(e)})
+            logger.error(f"Unexpected error: {e}")            
+            raise ValidationError({"error": "An unexpected error occurredddddd " + str(e)})
 
 class UpdateCustomerAmountView(APIView):
 
@@ -267,9 +281,15 @@ class CreateComment(generics.CreateAPIView):
 
 
 class SignInView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+
+        if not username or not password:
+            return Response({"detail": "Please provide both username and password."}, status=status.HTTP_400_BAD_REQUEST)
+
         
         # Authenticate the user
         user = authenticate(request, username=username, password=password)     #  If the authentication is successful (i.e., the username and password are correct), it returns the User object. If authentication fails (incorrect username or password), it returns None.

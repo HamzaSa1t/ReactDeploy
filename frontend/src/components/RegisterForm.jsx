@@ -1,41 +1,69 @@
 import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/form.css"
+import "../styles/form.css";
 import LoadingIndicator from "./LoadingIndicator";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";  // Adjust the path to your constants.js
+
 
 function RegisterForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [UserType, setUserType] = useState();
+    const [UserType, setUserType] = useState("Customer");
     const [loading, setLoading] = useState(false);
-    const options = ['Customer', 'Employee', 'Manager'];
-    const [errorMessage, setErrorMessage] = useState('');
+    const options = ["Customer", "Employee", "Manager"];
+    const [errorMessage, setErrorMessage] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [userTypeError, setUserTypeError] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleRegister = async (e) => {
         setLoading(true);
         e.preventDefault();
+        setUsernameError("");
+        setPasswordError("");
+        setUserTypeError("");
+        setErrorMessage("");
 
         try {
-            const res = await api.post("/api/user/register/", { username, password, profile_user: { user_type: UserType } });
-               // localStorage.setItem(ACCESS_TOKEN, res.data.access);
-              //  localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-               // navigate("/")
-               console.log("successed!");
+            const res = await api.post("api/user/register/", {username, password, profile_user: { user_type: UserType },});
+            console.log(" rigester successed!");
+            
+
+            if (res.status === 201) {
+                try {
+                    // Send login request
+                    const res2 = await api.post("api/user/signin/", { username, password });
+                    console.log("Login succeeded!");
+
+                    // Store tokens and navigate
+                    localStorage.setItem(ACCESS_TOKEN, res2.data.access);
+                    localStorage.setItem(REFRESH_TOKEN, res2.data.refresh);
+                    navigate("/"); // Redirect after login
+                } catch (error) {
+                    console.log("Login Error:", error); // Log login errors for debugging
+                    setErrorMessage("Login failed: " + (error.response?.data?.detail || error.message));
+                }
+            }
+           
         } catch (error) {
+            console.log("Error response:", error);
+
             if (error.response && error.response.data) {
                 const errorData = error.response.data;
-    
+
+                if (errorData.username) {
+                    setUsernameError(errorData.username[0]);
+                }
+                if (errorData.password) {
+                    setPasswordError(errorData.password[0]);
+                }
+                if (errorData.user_type) {
+                    setUserTypeError(errorData.user_type[0]);
+                }
                 if (errorData.error) {
                     setErrorMessage(errorData.error);
-                } else if (errorData.user_type) {
-                    setErrorMessage(errorData.user_type);
-                } else if (errorData.username) {
-                    setErrorMessage(errorData.username[0]);
-                } else if (errorData.password) {
-                    setErrorMessage(errorData.password[0]);
                 } else {
                     setErrorMessage("An unknown error occurred.");
                 }
@@ -44,14 +72,15 @@ function RegisterForm() {
             } else {
                 setErrorMessage("Request failed: " + error.message);
             }
-        }
-        finally {
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
+        <div> 
+
+        <form onSubmit={handleRegister} className="form-container">
             <h1>Register</h1>
             <input
                 className="form-input"
@@ -60,6 +89,7 @@ function RegisterForm() {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
             />
+            {usernameError && <p style={{ color: "red" }}>{usernameError}</p>}
             <input
                 className="form-input"
                 type="password"
@@ -67,35 +97,32 @@ function RegisterForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
             />
+            {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
             <div>
-            <label htmlFor="select">Choose a type:</label>
-            <select
-                id="type-select"
-           //   name="type"
-                value={UserType}  // Controlled component
-                onChange={(e) => setUserType(e.target.value)}
-
-            >
-                {options.map((option) => (
-                <option key={option} value={option}>
-                {option}
-                </option>
-                ))}
-            </select>
+                <label htmlFor="select">Choose a type:</label>
+                <select
+                    id="type-select"
+                    value={UserType}
+                    onChange={(e) => setUserType(e.target.value)}
+                >
+                    {options.map((option) => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </select>
+                {userTypeError && <p style={{ color: "red" }}>{userTypeError}</p>}
             </div>
-            
 
             {loading && <LoadingIndicator />}
-            <button className="form-button" type="submit">register</button>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            <button className="form-button" type="submit">
+                register
+            </button>
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </form>
+
+        </div>
     );
 }
 
-export default RegisterForm
-
-
-
-
-
-
+export default RegisterForm;

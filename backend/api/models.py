@@ -77,9 +77,9 @@ class EmployeeRelationToProduct(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile_user")
     choices = [
-        ('customer', 'Customer'),
-        ('employee', 'Employee'),
-        ('manager', 'Manager'),
+        ('Customer', 'Customer'),
+        ('Employee', 'Employee'),
+        ('Manager', 'Manager'),
     ]   
     user_type = models.CharField(choices=choices, max_length=20,)
 

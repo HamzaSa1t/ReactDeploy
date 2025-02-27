@@ -10,28 +10,37 @@ function LoginForm({ route, method }) {
     const [password, setPassword] = useState("");
     const [UserType, setUserType] = useState("");
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         setLoading(true);
         e.preventDefault();
+        setErrorMessage("");
 
         try {
-            const res = await api.post(route, { username, password })
-                localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate("/")
+            const res = await api.post("api/user/signin/", { username, password })
+            console.log("Login successed!");
+
+            localStorage.setItem(ACCESS_TOKEN, res.data.access);
+            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+            navigate("/")
         } catch (error) {
             alert(error)
+            console.log("Login Error:", error); // Log login errors for debugging
+            setErrorMessage("Login failed: " + (error.response?.data?.detail || error.message));
         } finally {
             setLoading(false)
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
+<div>
+        <header className="header"></header>
+
+        <form onSubmit={handleLogin} className="form-container">
+            <h1>Login</h1>
             <input
                 className="form-input"
                 type="text"
@@ -48,9 +57,12 @@ function LoginForm({ route, method }) {
             />
             {loading && <LoadingIndicator />}
             <button className="form-button" type="submit">
-                {name}
+                Login
             </button>
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </form>
+
+        </div>
     );
 }
 

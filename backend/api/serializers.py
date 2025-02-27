@@ -15,12 +15,20 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password", "profile_user"]  # Include user_type
         extra_kwargs = {"password": {"write_only": True}}
    
-
     def create(self, validated_data):
+        profile_data = validated_data.pop('profile_user', None)  # Extract profile_user
+        user = User.objects.create_user(**validated_data)  # Create the User instance
+        
+        # Create the Profile instance
+        if profile_data:
+            Profile.objects.create(user=user, **profile_data)
+        
+        return user
+    """ def create(self, validated_data):
         user_type = validated_data.pop('user_type', None)  # Extract user_type
         user = User.objects.create_user(**validated_data)
         Profile.objects.create(user=user, user_type=user_type)  # Create the Profile object
-        return user
+        return user """
 
 class ProductSerializer(serializers.ModelSerializer):
     seller = serializers.CharField(source='seller.username', read_only=True,)  # Use the username instead of ID
