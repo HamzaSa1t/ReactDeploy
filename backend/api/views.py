@@ -50,6 +50,8 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 import logging
 from django.db import IntegrityError
+from decimal import Decimal, ROUND_HALF_UP
+
 
 
 logger = logging.getLogger(__name__)
@@ -71,9 +73,10 @@ def send_email(email):
             return Response({'error': 'Invalid email address'})
         except Exception as e:
             return Response({'error': f'Error sending email: str{e}'})
+
 class IsManagerOrEmployee(BasePermission):
     def has_permission(self, request, view):
-                return request.user.is_authenticated and (request.user.profile_user.user_type in ['manager', 'employee'])
+                return request.user.is_authenticated and (request.user.profile_user.user_type in ['Manager', 'Employee'])
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -82,9 +85,6 @@ class UserDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
-                     
-
-            
 
 class IsManager(BasePermission):
     def has_permission(self, request, view):
@@ -95,7 +95,7 @@ class IsEmployee(BasePermission):
 class IsManagerOrSeller(BasePermission):
     def has_permission(self, request, view): # pk?
                 product = Product.objects.get(pk = view.kwargs["pk"])         # Get the product instance by pk (primary key)
-                return request.user.is_authenticated and ( (request.user.profile_user.user_type == 'manager') or request.user.username == Product.seller.username  ) 
+                return request.user.is_authenticated and ( (request.user.profile_user.user_type == 'manager') or request.user.username == product.seller.username  ) 
 class IsCustomer(BasePermission):
     def has_permission(self, request, view):
                 return request.user.is_authenticated and (request.user.profile_user.user_type == "customer")
@@ -266,19 +266,23 @@ class Buy(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)  # ✅ General error handling
 
 class CreateComment(generics.CreateAPIView):
-    permission_classes = [IsCustomer]
+    permission_classes = [AllowAny]
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        product_id = self.kwargs.get("product_id")  # or use self.request.parser_context["kwargs"]
+        pk = self.kwargs.get("pk")  # or use self.request.parser_context["kwargs"]
         try:
-            product = Product.objects.get(pk=product_id)
-        except product.DoesNotExist:  
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:  
             raise NotFound(detail="Product with the given ID does not exist.")
 
-        
-        serializer.save(written_by = self.request.user, the_product=product )
+        user = self.request.user
+        try:
+            customer = Customer.objects.get(user=user)
+        except Customer.DoesNotExist:
+            raise NotFound(detail="Customer profile not found.")
 
+        serializer.save(written_by=customer, the_product=product)
 
 class SignInView(APIView):
     permission_classes = [AllowAny]
@@ -471,7 +475,10 @@ class DeleteProduct(generics.DestroyAPIView):
     permission_classes = [IsManagerOrSeller]
 
     def perform_destroy(self, instance):
-        return super().perform_destroy(instance)
+        # Optional logging or additional actions before deletion
+        logger.info(f"Deleting product: {instance.name} (ID: {instance.pk})")
+        super().perform_destroy(instance)
+
 class UpdateProduct(generics.RetrieveUpdateAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
@@ -491,14 +498,15 @@ class RateProduct(generics.UpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
 
         if 'new_rating' in request.data:
-            new_rating = request.data['new_rating']
+            new_rating = Decimal(request.data['new_rating'])
         
         # Ensure that the current rating is set; if not, default it to new_rating.
-            current_avg = instance.rating if instance.rating is not None else 0
-            current_count = instance.number_of_ratings
+            current_avg = Decimal(instance.rating if instance.rating is not None else 0)
+            current_count = Decimal(instance.number_of_ratings)
         
         # Calculate the new average rating
             new_average = (current_avg * current_count + new_rating) / (current_count + 1)
+            new_average = new_average.quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)
             request.data['rating'] = new_average
         
         # Update the count of ratings
@@ -524,7 +532,7 @@ class RateProduct(generics.UpdateAPIView):
 class ListProducts(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsManager]
+    permission_classes = [IsAuthenticated]
 
 
 class CreateProduct(generics.CreateAPIView):
@@ -699,7 +707,7 @@ class ListUsers(generics.ListAPIView):
 class ListEmployees(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = Employeeserializers
-    permission_classes = [IsManager]       
+    permission_classes = [IsManager]
 
 
 
@@ -721,4 +729,3 @@ class ListEmployees(generics.ListAPIView):
 
 
 
-        
