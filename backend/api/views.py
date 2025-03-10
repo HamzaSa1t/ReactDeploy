@@ -557,15 +557,14 @@ class GetComments(generics.ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-
-        product_id = self.kwargs.get("product_id") # it is part of the url like: /products/123/
+        pk = self.kwargs.get("pk")  # it is part of the url like: /products/123/
         
         try:
-            our_product = Product.objects.get(pk = product_id)
+            our_product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
             raise NotFound(detail="Product with the given ID does not exist.")
 
-        return Comment.objects.filter(the_product = our_product)
+        return Comment.objects.filter(the_product=our_product)
 
 
 # manager
