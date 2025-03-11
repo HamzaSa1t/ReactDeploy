@@ -24,27 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
             Profile.objects.create(user=user, **profile_data)
         
         return user
-    """ def create(self, validated_data):
-        user_type = validated_data.pop('user_type', None)  # Extract user_type
-        user = User.objects.create_user(**validated_data)
-        Profile.objects.create(user=user, user_type=user_type)  # Create the Profile object
-        return user """
-
-class ProductSerializer(serializers.ModelSerializer):
-    seller = serializers.CharField(source='seller.username', read_only=True,)  # Use the username instead of ID
-
-    class Meta:
-        model = Product
-        fields = ["id", "name", "seller", "created_at", "price", "description", "picture","rating", "number_of_ratings", "new_rating" ]
-        extra_kwargs = {"seller" : {"read_only" : True}, "number_of_ratings" : {"read_only" : True}} 
-
-class CommentSerializer(serializers.ModelSerializer):
-     written_by = serializers.CharField(source = "written_by.username", read_only = True)
-     the_product = serializers.CharField(source = "the_product.name", read_only = True)
-
-     class meta:
-          model = Comment
-          fields = ["content", "created_at", "written_by", "the_product"]
 
 class Employeeserializers(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", read_only=True)
@@ -68,15 +47,15 @@ class Customerserializers(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ["id", "user", "username", "email", "joined_at", "amount", "products_in_basket", "history", "charge"]
-        read_only_fields = ['user']
+        read_only_fields = ['user']        
 
-class UpdateAmountSerializer(serializers.Serializer):
-    increament = serializers.IntegerField()
+class ProductSerializer(serializers.ModelSerializer):
+    seller = serializers.CharField(source='seller.username', read_only=True,)  # Use the username instead of ID
 
-    def validate_incraement(self, value):
-        if value < 0:
-                        raise serializers.ValidationError("Increment value must be positive.")
-        return value
+    class Meta:
+        model = Product
+        fields = ["id", "name", "seller", "created_at", "price", "description", "picture","rating", "number_of_ratings", "new_rating" ]
+        extra_kwargs = {"seller" : {"read_only" : True}} 
 
 class CustomerRelationToProductSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name')
@@ -85,6 +64,22 @@ class CustomerRelationToProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerRelationToProduct
         fields = ['product_name', 'quantity']
+
+class CommentSerializer(serializers.ModelSerializer):
+     written_by = serializers.CharField(source = "written_by.user.username", read_only = True)
+     the_product = serializers.CharField(source = "the_product.name", read_only = True)
+
+     class Meta:
+          model = Comment
+          fields = ["content", "created_at", "written_by", "the_product"]
+
+class UpdateAmountSerializer(serializers.Serializer):
+    increament = serializers.IntegerField()
+
+    def validate_incraement(self, value):
+        if value < 0:
+                        raise serializers.ValidationError("Increment value must be positive.")
+        return value
 
 class ManagerRelationToProductSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name')
@@ -107,25 +102,6 @@ class RatingProductSerializer(serializers.Serializer):
         model = Product
         fields = ["rating"]
      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -162,7 +138,7 @@ class RatingProductSerializer(serializers.Serializer):
 
 
 
-         
+
 
 
 

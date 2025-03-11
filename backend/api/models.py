@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import JSONField
 
 class Product(models.Model):
         name = models.CharField(max_length=30)
@@ -9,7 +10,7 @@ class Product(models.Model):
         price = models.DecimalField(validators=[MinValueValidator(0), MaxValueValidator(10000)], decimal_places=2, max_digits=10,) #??10?7
         description = models.CharField(max_length=250,blank=True,null=True)
         picture = models.ImageField(blank=True,null=True)
-        rating = models.DecimalField(validators=[MinValueValidator(0), MaxValueValidator(5)], decimal_places=2, max_digits=3,blank=True,null=True)
+        rating = models.DecimalField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)], decimal_places=2, max_digits=3)
         number_of_ratings = models.IntegerField(default=0)
         new_rating = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(5)])
         quantity_sold = models.IntegerField(default=0)
@@ -84,11 +85,13 @@ class Profile(models.Model):
     user_type = models.CharField(choices=choices, max_length=20,)
 
 class Comment(models.Model):
-     content = models.CharField(max_length=150)
+     #content = models.CharField(max_length=150)
+     content = JSONField()  # Store a list of strings
      created_at = models.DateTimeField(auto_now_add=True)
      written_by = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="comment_customer")
      the_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="comment_product")
      
      def __str__(self):
-             return self.content[:20]
+             return str(self.content)[:20]  # Display the first 20 characters of the JSON representation
+             #return self.content[:20]
 

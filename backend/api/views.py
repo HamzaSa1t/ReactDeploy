@@ -98,7 +98,7 @@ class IsManagerOrSeller(BasePermission):
                 return request.user.is_authenticated and ( (request.user.profile_user.user_type == 'manager') or request.user.username == product.seller.username  ) 
 class IsCustomer(BasePermission):
     def has_permission(self, request, view):
-                return request.user.is_authenticated and (request.user.profile_user.user_type == "customer")
+                return request.user.is_authenticated and (request.user.profile_user.user_type == "Customer")
 ###########
 
 class CreateUserView(generics.CreateAPIView):
@@ -151,9 +151,10 @@ class UpdateCustomerAmountView(APIView):
 
     permission_classes = [IsCustomer]  # Anyone can access
 
-    def post(self, request, pk): 
+    def post(self, request):
+        user = self.request.user
         try: #?
-            customer = Customer.objects.get(pk=pk)
+            customer = Customer.objects.get(user=user)
         except Customer.DoesNotExist:
             return Response({"error": "Customer not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -309,9 +310,6 @@ class SignInView(APIView):
         else:
             return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-
-
 class AddToChart(UpdateAPIView):
     queryset = Customer.objects.all()
     serializer_class = Customerserializers
@@ -319,7 +317,7 @@ class AddToChart(UpdateAPIView):
 
     def get_object(self):
         try:
-            return self.request.user.customer
+            return self.request.user.customer_username
         except Customer.DoesNotExist:
             raise NotFound("Customer profile not found.")
 
@@ -327,7 +325,7 @@ class AddToChart(UpdateAPIView):
         customer = self.get_object()
         product_id = self.request.data.get('Product_id')
         quantity = self.request.data.get('quantity', 1)  # Default to 1 if quantity is not provided
-        
+
         if not product_id:
             raise ValidationError({"Product_id": "This field is required."})
         
@@ -357,19 +355,19 @@ class ShowBalance(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user # we use it in apiviews
+
         try:
             customer = user.customer_username  # Access the related Customer object
             return Response({"balance": customer.amount}, status=status.HTTP_200_OK)
-        except customer.DoesNotExist:
-            pass
+        except Customer.DoesNotExist:
+            pass  
 
         try:
             employee = user.employee_username  # Access the related Employee object
             return Response({"balance": employee.amount}, status=status.HTTP_200_OK)
         except Employee.DoesNotExist:
-            pass
+            pass  
 
-        # Check if the user is a Manager
         try:
             manager = user.manager_username  # Access the related Manager object
             return Response({"balance": manager.amount}, status=status.HTTP_200_OK)
