@@ -1,16 +1,19 @@
 import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
-
-const apiUrl = "/choreo-apis/awbo/backend/rest-api-be2/v1.0";
+import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : apiUrl,
+  baseURL: "http://localhost:8000",
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 });
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
+    if (!config.url.includes("/register") && !config.url.includes("user/signin/") && token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
