@@ -9,7 +9,7 @@ class Product(models.Model):
         created_at = models.DateTimeField(auto_now_add=True)
         price = models.DecimalField(validators=[MinValueValidator(0), MaxValueValidator(10000)], decimal_places=2, max_digits=10,) #??10?7
         description = models.CharField(max_length=250,blank=True,null=True)
-        picture = models.ImageField(blank=True,null=True)
+        picture = models.ImageField(blank=True,null=True, default="logo_krod3So.png")
         rating = models.DecimalField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)], decimal_places=2, max_digits=3)
         number_of_ratings = models.IntegerField(default=0)
         new_rating = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(5)])
@@ -31,7 +31,7 @@ class Customer(models.Model):
 
 
     def __str__(self):
-             return self.user.username  # Access the `username` field of the related User object
+             return self.user.username  
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="employee_username", null=True, blank=True)
@@ -52,28 +52,28 @@ class Manager(models.Model):
         return self.user.username
 
 class CustomerRelationToProduct(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)  # ✅ Lowercase
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)    # ✅ Lowercase
-    quantity = models.PositiveIntegerField(default=1)  # To allow multiple instances
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)  
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)    
+    quantity = models.PositiveIntegerField(default=1)  
     is_bought = models.BooleanField(default=False)
     def __str__(self):
-        return f"{self.customer.user.name} - {self.product.name} (x{self.quantity})"    
+        return f"{self.customer.user.username} - {self.product.name} (x{self.quantity})"    
 
 class ManagerRelationToProduct(models.Model):
-    seller = models.ForeignKey(Manager, on_delete=models.CASCADE)  # ✅ Lowercase
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)    # ✅ Lowercase
-    quantity = models.PositiveIntegerField(default=1)  # To allow multiple instances
+    seller = models.ForeignKey(Manager, on_delete=models.CASCADE)  
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)    
+    quantity = models.PositiveIntegerField(default=1)  
 
     def __str__(self):
-        return f"{self.seller.user.name} - {self.product.name} (x{self.quantity})"    
+        return f"{self.seller.user.username} - {self.product.name} (x{self.quantity})"    
 
 class EmployeeRelationToProduct(models.Model):
-    seller = models.ForeignKey(Employee, on_delete=models.CASCADE)  # ✅ Lowercase
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)    # ✅ Lowercase
-    quantity = models.PositiveIntegerField(default=1)  # To allow multiple instances
+    seller = models.ForeignKey(Employee, on_delete=models.CASCADE)  
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)    
+    quantity = models.PositiveIntegerField(default=1)  
 
     def __str__(self):
-        return f"{self.seller.user.name} - {self.product.name} (x{self.quantity})"    
+        return f"{self.seller.user.username} - {self.product.name} (x{self.quantity})"    
 
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile_user")
@@ -92,6 +92,5 @@ class Comment(models.Model):
      the_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="comment_product")
      
      def __str__(self):
-             return str(self.content)[:20]  # Display the first 20 characters of the JSON representation
-             #return self.content[:20]
+             return str(self.content)[:20] 
 

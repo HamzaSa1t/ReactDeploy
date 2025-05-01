@@ -1,13 +1,11 @@
 import RegisterForm from "../components/RegisterForm"
 import Structure from "../components/Structure"
 import React, { useState } from 'react';
-import img from "../assets/image.png"
 import { Link } from 'react-router-dom';
 import "../styles/background.css"
+import Tail from "../components/Tail.jsx";
 
 function Register() {
-
-   
 
    return <div>
 
@@ -30,6 +28,7 @@ function Register() {
 <RegisterForm/>
 </div>
 
+<Tail />
 
     </div>
 }

@@ -4,6 +4,10 @@ from api.views import CreateUserView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshSlidingView
 from django.urls import path
 from . import views
+from django.core.mail import send_mail
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import path, include
 
 urlpatterns = [
     # Authentication
@@ -20,12 +24,12 @@ urlpatterns = [
     path("products/my/", views.MyProductList.as_view(), name="my_products"),
 
     # Comments Endpoints
-    path("products/<int:product_id>/comments/", views.GetComments.as_view(), name="get_comments"),
-    path("products/<int:product_id>/comments/create/", views.CreateComment.as_view(), name="create_comment"),
+    path("products/<int:pk>/comments/", views.GetComments.as_view(), name="get_comments"),
+    path("products/<int:pk>/comments/create/", views.CreateComment.as_view(), name="create_comment"),
 
     # Customer Endpoints
     path("customers/list/", views.ListCustomers.as_view(), name="list_customers"),
-    path("customers/<int:pk>/charge/", views.UpdateCustomerAmountView.as_view(), name="charge"),
+    path("customers/charge/", views.UpdateCustomerAmountView.as_view(), name="charge"),
     path("customers/history/", views.ShowHistoryCustomer.as_view(), name="customer_history"),
     path("customers/calculate-charge/", views.CalculateCharge.as_view(), name="calculate_charge"),
     path("customers/buy/<int:pk>/", views.Buy.as_view(), name="buy"),
@@ -44,23 +48,23 @@ urlpatterns = [
 
     # Employee Endpoints
     path("employees/list/", views.ListEmployees.as_view(), name="list_employees"),
-    path("employees/history/", views.ShowHistoryEmployee.as_view(), name="employee_history"),
+    #path("employees/history/", views.ShowHistoryEmployee.as_view(), name="employee_history"),
     path("employees/<int:pk>/delete-fire/", views.DeleteFireEmployee.as_view(), name="delete_fire_employee"),
 
     # User Listing
     path("users/list/", views.ListUsers.as_view(), name="list_users"),
 
     # Dashboard
-    path("dashboard/", views.Dashboard.as_view(), name="dashboard"),
+    #path("dashboard/", views.Dashboard.as_view(), name="dashboard"),
 
     # Optional: Include DRF’s browsable API login URLs
     path("api-auth/", include("rest_framework.urls")),
 
     #User Details
         path("UserDetails/", views.UserDetailView.as_view(), name="UserDetails"),
-
+    # send email
+    path("send-email/", views.send_email_api, name="send_email"),
 ]
 
 
 
- 

@@ -1,8 +1,8 @@
 .backl {
     background-color: #F5F5DC ;
-    height: 100%;/* Adjust width and height to control the aqua area */
-    width: 100%; /* Example: 50% of the page width */
-    min-height: 100%; /* Example: Minimum height */
-    padding-bottom: 100%; /* Add padding for spacing */
+    height: 100%;
+    width: 100%; 
+    min-height: 100%; 
+    padding-bottom: 100%; 
     padding-top: 1%;
   }

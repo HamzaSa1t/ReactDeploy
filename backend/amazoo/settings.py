@@ -29,7 +29,8 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -173,11 +174,14 @@ CORS_ALLOWS_CREDENTIALS = True
 """
 WE ADDED THOSE FUNCTIONS AND MADE THEM = TRUE.
 """
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", # or the correct port for your react app.
+]
 
-
+CORS_ALLOW_CREDENTIALS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'amazoowebsite@gmail.com'
-EMAIL_HOST_PASSWORD = 'AmazooWebsite12'  
+EMAIL_HOST_PASSWORD = 'wrhh zbnl vqek xnqn'  

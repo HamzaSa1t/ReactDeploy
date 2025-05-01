@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomerRelationToProduct, Customer
 from .serializers import CustomerRelationToProductSerializer
-from decimal import Decimal  # Ensure proper decimal handling
+from decimal import Decimal  
 from django.contrib.auth.models import User
 from rest_framework import generics, response, status
 from rest_framework.response import Response
@@ -28,7 +28,7 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from django.db.models import Sum, F, Count
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated  # Use the correct permission for the manager
+from rest_framework.permissions import IsAuthenticated  
 from .models import CustomerRelationToProduct, Product, Customer
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -51,28 +51,68 @@ from django.core.exceptions import ValidationError
 import logging
 from django.db import IntegrityError
 from decimal import Decimal, ROUND_HALF_UP
-
-
-
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import authenticate, login
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 logger = logging.getLogger(__name__)
+from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+import json
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_email_api(request):
 
+    try:
+        if not isinstance(request.data, dict):
+            return Response({'error': 'Invalid request data format. Expected a dictionary.'}, status=400)
 
-def send_email(email):
-        try:
-            validate_email(email)  # Raises ValidationError if invalid
-            
-            # Replace with your actual email settings
-            subject = 'Subjectxxxxxx2'
-            message = 'iiiiiiMessage'
-            from_email = '37mezo@gmail.com'
-            recipient_list = [email]
-            
-            send_mail(subject, message, from_email, recipient_list)
-        except ValidationError:  # Catch the email validation error
-            return Response({'error': 'Invalid email address'})
-        except Exception as e:
-            return Response({'error': f'Error sending email: str{e}'})
+        data = request.data
+        email = data.get('email')
+
+        if not email:
+            return Response({'error': 'Email address is required'}, status=400)
+
+        validate_email(email)
+
+        subject = 'Email subject for Amazoo'
+        message = 'This is a trial message.'
+        from_email = '37mezo@gmail.com'
+        recipient_list = [email]
+
+        send_mail(subject, message, from_email, recipient_list)
+
+        return Response({'message': 'Email sent successfully'})
+
+    except ValidationError:
+        return Response({'error': 'Invalid email address'}, status=400)
+    except Exception as e:
+        return Response({'error': f'Error sending email: {str(e)}'}, status=500)
 
 class IsManagerOrEmployee(BasePermission):
     def has_permission(self, request, view):
@@ -88,18 +128,18 @@ class UserDetailView(generics.RetrieveAPIView):
 
 class IsManager(BasePermission):
     def has_permission(self, request, view):
-                return request.user.is_authenticated and (request.user.profile_user.user_type == 'manager') 
+                return request.user.is_authenticated and (request.user.profile_user.user_type == 'Manager') 
 class IsEmployee(BasePermission):
     def has_permission(self, request, view):
-                return request.user.is_authenticated and (request.user.profile_user.user_type == 'employee') 
+                return request.user.is_authenticated and (request.user.profile_user.user_type == 'Employee') 
 class IsManagerOrSeller(BasePermission):
     def has_permission(self, request, view): # pk?
-                product = Product.objects.get(pk = view.kwargs["pk"])         # Get the product instance by pk (primary key)
-                return request.user.is_authenticated and ( (request.user.profile_user.user_type == 'manager') or request.user.username == product.seller.username  ) 
+                product = Product.objects.get(pk = view.kwargs["pk"])      
+                return request.user.is_authenticated and ( (request.user.profile_user.user_type == 'Manager') or request.user.username == product.seller.username  ) 
 class IsCustomer(BasePermission):
     def has_permission(self, request, view):
                 return request.user.is_authenticated and (request.user.profile_user.user_type == "Customer")
-###########
+
 
 class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -108,8 +148,7 @@ class CreateUserView(generics.CreateAPIView):
     @transaction.atomic # Check word doc
     def perform_create(self, serializer):
       try:  
-        user = serializer.save()                        # This line creates a new User object and saves it to the database, It returns the newly created User instance, which is then assigned to the user variable.
-        profile_data = self.request.data.get("profile_user", {})
+        user = serializer.save()                   
         user_type = profile_data.get("user_type")
         
         if not user_type:
@@ -128,28 +167,24 @@ class CreateUserView(generics.CreateAPIView):
             Manager.objects.create(user=user)
       
       except ValidationError as e:
-            # Handle the validation error and re-raise it for the response
             logger.error(f"ValidationError: {e}")
             raise e
       except IntegrityError as e:
-            # Handle database integrity errors (e.g., unique constraint violations)
             user.delete()
             logger.error(f"IntegrityError: str{e}")
             raise ValidationError({"error": "Database integrity error: " + str(e)})
       except ValidationError as e:
-            # Handle and log the validation error
             logger.error(f"ValidationError: {e}")
-            raise e  # Re-raise the validation error to send it to the frontend
+            raise e 
       except Exception as e:
-            # Catch any other unexpected errors and handle them
             if user:
-                user.delete()  # Ensure the user is deleted if there's an unexpected error
+                user.delete() 
             logger.error(f"Unexpected error: {e}")            
             raise ValidationError({"error": "An unexpected error occurredddddd " + str(e)})
 
 class UpdateCustomerAmountView(APIView):
 
-    permission_classes = [IsCustomer]  # Anyone can access
+    permission_classes = [IsCustomer]  
 
     def post(self, request):
         user = self.request.user
@@ -158,7 +193,6 @@ class UpdateCustomerAmountView(APIView):
         except Customer.DoesNotExist:
             return Response({"error": "Customer not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Use the serializer to validate the input data
         serializer = UpdateAmountSerializer(data=request.data)
         if serializer.is_valid():
             increament = serializer.validated_data["increament"]
@@ -192,15 +226,15 @@ class InsufficientBalanceError(Exception):
         super().__init__(self.message)
     
 class CalculateCharge(APIView):
-    permission_classes = [IsCustomer]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
             user = request.user
-            customer = user.customer_username  # Access the related Customer object
+            customer = user.customer_username 
             
             our_products = CustomerRelationToProduct.objects.filter( customer = customer, is_bought = False )
-            
-            # Ensure charge is not None
+            customer.charge = 0
+
             if customer.charge is None:
                 customer.charge = 0
 
@@ -211,50 +245,81 @@ class CalculateCharge(APIView):
             return Response({"charge": customer.charge}, status=status.HTTP_200_OK)
 
 class Buy(APIView):
-    permission_classes = [IsCustomer]
+    permission_classes = [AllowAny]
     
     def post(self, request, pk, *args, **kwargs):
-        
         try:    
-                our_customer = Customer.objects.get(pk=pk)
-                charge = CalculateCharge(our_customer)
+                user = User.objects.get(pk=pk)
+                our_customer = Customer.objects.get(user=user)
                 our_products = CustomerRelationToProduct.objects.filter(customer = our_customer, is_bought = False )
 
-                
+            # CHARGE
+                our_customer.charge = 0 
+                if our_customer.charge is None:
+                    our_customer.charge = 0
+                else:
+                    for i in our_products:
+                        our_customer.charge += Decimal(i.product.price) * i.quantity
+                charge = our_customer.charge
+
+
                 if our_customer.amount < charge:
-                    raise InsufficientBalanceError()  # ✅ Raising the custom exception
+                    raise InsufficientBalanceError()
 
                 email = request.data.get("email")  
                 if email:
                         send_email(email)  
 
-
-                
+                # NO USE
                 for i in our_products:   
                     our_customer.quantity_bought += i.quantity 
+
                 for x in our_products:
-                    x.product.quantity_sold += x.quantity       
+                    x.product.quantity_sold += x.quantity
+                    x.product.save()   
+                
+          
+
+                # CUSTOMER
                 our_customer.how_much_bought += charge      
                 our_customer.amount -= charge
                 our_customer.charge = 0
-                our_customer.save()  # ✅ This ensures the change is saved in the database.
-                our_customer.history.add(*our_products)
+                our_customer.save()  
+
+                product_list = [relation.product for relation in our_products]
+                our_customer.history.add(*product_list)
                 
-                for i in our_products:
+                for i in our_products:                                                          
+
                     our_seller = i.product.seller
                     
-                    if our_seller.user_type == "employee":
-                        our_seller.employee.amount +=  i.quantity * i.product.price
-                        our_seller.employee.history.add(i.product)
-                        our_seller.employee.save()
-                    elif our_seller.user_type == "manager":
-                        our_seller.manager.amount += i.quantity * i.product.price
-                        our_seller.manager.history.add(i.product) 
-                        our_seller.manager.save()               
+                    if our_seller.profile_user.user_type == "Employee":
+                        our_seller.employee_username.amount += i.quantity * i.product.price  
+                        our_seller.employee_username.history.add(i.product)  # #######
+                        our_seller.employee_username.save()
+                    
+                    elif our_seller.profile_user.user_type == "Manager":
+                        our_seller.manager_username.amount += i.quantity * i.product.price  
+                        our_seller.manager_username.history.add(i.product)  ###########
+                        our_seller.manager_username.save()
 
-                for x in our_products:
+
+                for i in our_products:
+                    if i.product.seller.profile_user.user_type == "Employee":
+                        EmployeeRelationToProduct.objects.create(seller=i.product.seller.employee_username, product=i.product,quantity=i.quantity)
+                        print(i.product.seller.employee_username)
+                    elif i.product.seller.profile_user.user_type == "Manager":
+                        print(i.product.seller.manager_username)
+                        ManagerRelationToProduct.objects.create(seller=i.product.seller.manager_username, product=i.product,quantity=i.quantity)
+
+
+
+
+
+
+                for x in our_products: 
                     x.is_bought = True    
-                    x.save()  # Save each updated relation
+                    x.save()  
 
                 return Response({"message": "Purchase successful"}, status=status.HTTP_200_OK)
 
@@ -262,9 +327,9 @@ class Buy(APIView):
         except Customer.DoesNotExist:
                 return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
         except InsufficientBalanceError as e:
-                return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)  # ✅ Handling custom exception
+                return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)  
         except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)  # ✅ General error handling
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)  
 
 class CreateComment(generics.CreateAPIView):
     permission_classes = [AllowAny]
@@ -284,6 +349,23 @@ class CreateComment(generics.CreateAPIView):
             raise NotFound(detail="Customer profile not found.")
 
         serializer.save(written_by=customer, the_product=product)
+class SessionLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response({"detail": "Please provide both username and password."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)  # Establish a session
+            return Response({"detail": "Session login successful"})
+        else:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class SignInView(APIView):
     permission_classes = [AllowAny]
@@ -339,7 +421,7 @@ class AddToChart(UpdateAPIView):
             raise ValidationError({"Product_id": "Product not found."})
 
         # Check if the product is already in the basket
-        relation, created = CustomerRelationToProduct.objects.get_or_create(customer=customer, product=product)
+        relation, created = CustomerRelationToProduct.objects.get_or_create(customer=customer, product=product, is_bought=False)
         
         if not created:  # If the product is already in the basket, update the quantity
             relation.quantity += quantity
@@ -398,18 +480,31 @@ class DeleteFromChart(generics.DestroyAPIView):
 
     def get_object(self):
         user = self.request.user
-        product_id = self.kwargs.get('pk')  # Get the product ID from the URL
+        relation_id = self.kwargs.get('pk')  # This is the CustomerRelationToProduct ID
+        logger.info(f"Attempting to delete relation with ID: {relation_id} for user: {user.username}")
+        
         try:
-            # Get the specific CustomerRelationToProduct instance that connects the user and the product
             customer = Customer.objects.get(user=user)
-            relation = CustomerRelationToProduct.objects.get(customer=customer, product__pk=product_id, is_bought = False)
+            # Add debug logging
+            all_relations = CustomerRelationToProduct.objects.filter(customer=customer, is_bought=False)
+            logger.info(f"Current basket items for user {user.username}: {[f'Relation ID: {r.id}, Product ID: {r.product.id}' for r in all_relations]}")
+            
+            relation = CustomerRelationToProduct.objects.get(
+                id=relation_id,
+                customer=customer,
+                is_bought=False
+            )
+            logger.info(f"Found relation to delete: Relation ID {relation.id}, Product ID {relation.product.id}")
             return relation
+            
         except CustomerRelationToProduct.DoesNotExist:
+            logger.error(f"Relation with ID: {relation_id} not found in the basket for user: {user.username}")
             raise NotFound("The product is not in your basket.")
     
     def perform_destroy(self, instance):
         # This will delete the CustomerRelationToProduct instance that links the customer and the product
         instance.delete()
+        logger.info(f"Product with ID: {instance.product.id} deleted from the basket for user: {instance.customer.user.username}")
 
 class ShowChart(generics.ListAPIView):
     permission_classes = [IsCustomer]
@@ -574,24 +669,32 @@ class ListManagers(generics.ListAPIView):
 
 class ShowHistoryManager(generics.ListAPIView):
     serializer_class = ManagerRelationToProductSerializer  
-    permission_classes  = [IsManager]
+    permission_classes  = [AllowAny]
     
     def get_queryset(self):
         user = self.request.user
-        our_products = ManagerRelationToProduct.objects.filter(seller__user = user)
+        if user.profile_user.user_type == "Employee":
+            our_products = EmployeeRelationToProduct.objects.filter(seller = user.employee_username)
+        elif user.profile_user.user_type == "Manager":
+            our_products = ManagerRelationToProduct.objects.filter(seller = user.manager_username)  
+        else:
+            raise NotFound("You are not a manager or employee.")    
         return  our_products
+#             our_products = EmployeeRelationToProduct.objects.filter(seller = user)
 
 
-class ShowHistoryEmployee(generics.ListAPIView):
+""" class ShowHistoryEmployee(generics.ListAPIView):
     serializer_class = EmployeeRelationToProductSerializer  
-    permission_classes  = [IsManager]
-    
+    permission_classes  = [AllowAny]
+
     def get_queryset(self):
         user = self.request.user
         our_products = EmployeeRelationToProduct.objects.filter(seller__user = user)
-        return  our_products
+        return  our_products   """
 
-   
+
+
+"""    
 class Dashboard(APIView):
     permission_classes = [IsManager]
 
@@ -683,17 +786,22 @@ class Dashboard(APIView):
         }
 
         return Response(data)
-
+ """
 
 class DeleteFireEmployee(generics.DestroyAPIView):
     queryset = Employee.objects.all()
     permission_classes = [IsManager]
 
     def perform_destroy(self, instance):
-        if instance == self.request.user:
+        if instance.user == self.request.user:  
             raise ValidationError({"detail": "You cannot delete your own account."})
-        print(f"Employee {instance.id} ({instance.name}) has been deleted by {self.request.user.username}.")
-        return super().perform_destroy(instance)
+
+        # Delete the related User object
+        user = instance.user
+        print(f"Deleting User {user.username} related to Employee {instance.id}.")
+        user.delete()
+        print(f"Employee {instance.id} ({instance.user}) has been deleted by {self.request.user.username}.")
+        super().perform_destroy(instance)
 
 
 class ListUsers(generics.ListAPIView):
@@ -705,7 +813,6 @@ class ListEmployees(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = Employeeserializers
     permission_classes = [IsManager]
-
 
 
 

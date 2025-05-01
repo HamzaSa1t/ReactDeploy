@@ -28,7 +28,7 @@ function LoginForm({ route, method }) {
             navigate("/")
         } catch (error) {
             alert(error)
-            console.log("Login Error:", error); // Log login errors for debugging
+            console.log("Login Error:", error); 
             setErrorMessage("Login failed: " + (error.response?.data?.detail || error.message));
         } finally {
             setLoading(false)
@@ -47,7 +47,7 @@ function LoginForm({ route, method }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
-            />
+            /> 
             <input
                 className="form-input"
                 type="password"

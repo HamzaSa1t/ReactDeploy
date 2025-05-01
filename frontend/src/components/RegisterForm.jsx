@@ -3,7 +3,7 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 import "../styles/form.css";
 import LoadingIndicator from "./LoadingIndicator";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";  // Adjust the path to your constants.js
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";  
 
 
 function RegisterForm() {
@@ -33,16 +33,14 @@ function RegisterForm() {
 
             if (res.status === 201) {
                 try {
-                    // Send login request
                     const res2 = await api.post("api/user/signin/", { username, password });
                     console.log("Login succeeded!");
 
-                    // Store tokens and navigate
                     localStorage.setItem(ACCESS_TOKEN, res2.data.access);
                     localStorage.setItem(REFRESH_TOKEN, res2.data.refresh);
-                    navigate("/"); // Redirect after login
+                    navigate("/"); 
                 } catch (error) {
-                    console.log("Login Error:", error); // Log login errors for debugging
+                    console.log("Login Error:", error); 
                     setErrorMessage("Login failed: " + (error.response?.data?.detail || error.message));
                 }
             }

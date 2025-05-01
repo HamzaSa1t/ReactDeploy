@@ -1,0 +1,29 @@
+.product-details {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.product-details h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.product-details img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.product-details p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.product-details p strong {
+    font-weight: bold;
+}
