@@ -133,8 +133,9 @@ null
                             >
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 {product.picture && <img src={product.picture} alt={product.name} className="product-image" style={{
-                                    width: '600px',
-                                    height: '350px'
+                                  maxWidth: '100%', // Make the image width responsive within its container
+                                  maxHeight: '350px', // Maintain a maximum height
+                                  height: 'auto'
                                 }} />}
                                 </div>
                                 <h1 style={{ marginBottom:'0px'}}>{product.name}</h1>
