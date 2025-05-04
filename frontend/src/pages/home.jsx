@@ -126,15 +126,15 @@ null
 
                     <div className="products-list">
                         {products.map((product) => (
-                            <div key={product.id} className="product-item" style={{ position: 'relative', cursor: 'pointer' }} // Default cursor style
+                            <div key={product.id} className="product-item" style={{ position: 'relative', cursor: 'pointer' }} 
                                 onClick={() => navigate(`/ViewProduct/${product.id}`)}
-                                onMouseEnter={(e) => e.currentTarget.style.cursor = 'pointer'} // Change cursor to pointer on hover
-                                onMouseLeave={(e) => e.currentTarget.style.cursor = 'default'} // Reset cursor when mouse leaves
+                                onMouseEnter={(e) => e.currentTarget.style.cursor = 'pointer'} 
+                                onMouseLeave={(e) => e.currentTarget.style.cursor = 'default'} 
                             >
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 {product.picture && <img src={product.picture} alt={product.name} className="product-image" style={{
-                                  maxWidth: '100%', // Make the image width responsive within its container
-                                  maxHeight: '350px', // Maintain a maximum height
+                                  maxWidth: '100%',
+                                  maxHeight: '350px', 
                                   height: 'auto'
                                 }} />}
                                 </div>
@@ -146,14 +146,14 @@ null
                                 <div style={{ display: 'flex', flexDirection: 'row', }} onClick={(e) => e.stopPropagation()}>
                                  
                                 {(UserId === product.seller) && <button style={{ backgroundColor: '#4CAF50' }} onClick={(e) => {
-                                        e.stopPropagation(); // Prevent click from propagating
+                                        e.stopPropagation(); 
                                         ToEdit(product.id)
                                     }}>Edit</button>}
 
                                     <br></br>
 
                                     {(UserType === "Customer") && <button onClick={(e) => {
-                                        e.stopPropagation();  // Prevent click from propagating
+                                        e.stopPropagation();  
                                         ToCart(product.id)
                                     }}>Add to cart</button>}
 
