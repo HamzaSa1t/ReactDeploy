@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import Register from './pages/register';
 import AddProduct from './components/AddProduct';
 import ViewProduct from './pages/ViewProduct';
 import EditProduct from './pages/EditProduct';
@@ -11,7 +11,7 @@ import Charge from './pages/charge';
 import EmployeeHistory from './pages/employeeHistory';
 import Dashboard from './pages/dashboard';
 import Tail from './components/Tail'; // Import Tail component
-import notFound from './pages/notFound'; // Import notFound component
+import notFound from './pages/NotFound'; // Import notFound component
 
 function App() {
   return (

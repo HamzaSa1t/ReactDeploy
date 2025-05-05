@@ -1,6 +1,7 @@
 import react from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import Login from "./pages/login"
+import Login from './pages/Login';
+
 import Register from "./pages/register"
 import Home from "./pages/home"
 import NotFound from "./pages/NotFound"
@@ -19,13 +20,12 @@ import Basket from "./pages/Basket"
 import Structure from "./components/Structure"
 import ProductDetails from "./pages/ProductDetails"
 import EmployeeHistory from "./pages/EmployeeHistory"
-import api from "./api"
-
+import Tail from "./components/Tail"
 function App() {
   return (
     <BrowserRouter> <Routes>
       
-      <Route path="/" element={<ProtectedRoute> <Home/> </ProtectedRoute>}/>
+      <Route path="/" element={<ProtectedRoute> <Home/> </ProtectedRoute>}/> 
       <Route path="/charge"element={<ProtectedRoute><Charge/></ProtectedRoute>}/>
       <Route path="/dashboard"element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
       <Route path="/history"element={<ProtectedRoute><History/></ProtectedRoute>}/>
@@ -39,6 +39,7 @@ function App() {
       <Route path="/structure/:pk" element={<Structure />} />
       <Route path="/product/:pk" element={<ProductDetails />} />
       <Route path="/employeeHistory" element={<ProtectedRoute><EmployeeHistory/></ProtectedRoute>}/>
+      <Route path="/tail" element={<Tail />} />
 
 
 
