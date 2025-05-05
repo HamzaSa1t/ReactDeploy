@@ -13,19 +13,18 @@ function Register() {
         
         <h1>Amazoo</h1>
         <p className="tagline">We sell products you love!</p>
-
-        <p>
-
-          <Link to="/login">
-              Login
-            </Link>
-
-          </p>
     </header>    
 
 
 <div  className="backl"> 
 <RegisterForm/>
+<br></br>
+<p>
+
+<Link to="/login">
+    Login
+  </Link>
+</p>
 </div>
 
 <Tail />

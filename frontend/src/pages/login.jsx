@@ -14,8 +14,10 @@ return(
         <p className="tagline">We sell products you love!</p>
     </header>  
      </div>
+     
 <div className="backl"> 
 <LoginForm/>
+<br></br>
 <p>
           <Link to="/register">
               Register
