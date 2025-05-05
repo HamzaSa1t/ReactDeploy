@@ -2,7 +2,7 @@ import React, { useState, useEffect  } from 'react';
 import api from "../api";
 import { useParams } from 'react-router-dom';
 import DigitalClock from "./DigitalClock";
-import '../styles/comment.css';
+import '../styles/Comment.css';
 
 function Comment() {
       const { pk } = useParams(); 
