@@ -5,7 +5,7 @@ import Login from "../pages/Login"
 function Logout() {
 
     localStorage.clear()
-    return <Navigate to="/login" />
+    return <Navigate to="/login"/>
            
      
      }

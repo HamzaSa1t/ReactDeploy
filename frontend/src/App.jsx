@@ -1,7 +1,6 @@
 import react from "react"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import Login from './pages/Login.jsx';
-
+import Login from "./pages/Login.jsx";
 import Register from "./pages/register.jsx"
 import Home from "./pages/home.jsx"
 import NotFound from "./pages/NotFound.jsx"
@@ -32,7 +31,7 @@ function App() {
       <Route path="/profit"element={<ProtectedRoute><Profit/></ProtectedRoute>}/>
       <Route path="/ShowProducts"element={<ProtectedRoute><Products/></ProtectedRoute>}/>
       <Route path="/editProduct/:pk"element={<ProtectedRoute><EditProduct/></ProtectedRoute>}/>
-      <Route path="/ViewProduct/:pk"element={<ProtectedRoute><ViewProduct/></ProtectedRoute>}/>"
+      <Route path="/ViewProduct/:pk"element={<ProtectedRoute><ViewProduct/></ProtectedRoute>}/>
       <Route path="/AddProduct"element={<ProtectedRoute><AddProduct/></ProtectedRoute>}/>"
       <Route path="/AddBalance"element={<ProtectedRoute><AddBalance/></ProtectedRoute>}/>
       <Route path="/Basket/:pk"element={<ProtectedRoute><Basket/></ProtectedRoute>}/>
