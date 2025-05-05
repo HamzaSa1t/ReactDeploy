@@ -1,6 +1,7 @@
 import LoginForm from "../components/Loginform.jsx"
 import { Link } from 'react-router-dom';
 import Tail from "../components/Tail.jsx";
+import "../styles/background.css"
 
 function Login() {
 
