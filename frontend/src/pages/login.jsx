@@ -10,7 +10,7 @@ return(
 
 <div>
       <header className="header">   
-        <h1>Amazoo+++</h1>
+        <h1>Amazoo</h1>
         <p className="tagline">We sell products you love!</p>
         <p>
           <Link to="/register">
@@ -19,7 +19,7 @@ return(
           </p>
     </header>  
      </div>
-<div> 
+<div className="backl"> 
 <LoginForm/>
 </div>
 <Tail />
