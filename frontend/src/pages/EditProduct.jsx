@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import "../styles/Home.css"
+import "../styles/home.css"
 import "../components/Structure.jsx"
 import Structure from "../components/Structure.jsx";
 import { useParams, useLocation } from 'react-router-dom';
