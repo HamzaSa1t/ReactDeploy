@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Login from './pages/Login';
@@ -29,9 +29,10 @@ function App() {
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/notFound" element={<notFound />} />
       </Routes>
-      <Tail /> {/* Add Tail component here if you want it on every route */}
+      <Tail /> {/* Add Tail component here if you want it on every route 
     </Router>
   );
 }
 
 export default App;
+ */
