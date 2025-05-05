@@ -182,6 +182,7 @@ WE ADDED THOSE FUNCTIONS AND MADE THEM = TRUE.
 """
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # or the correct port for your react app.
+    "http://localhost:5175"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
