@@ -3,7 +3,7 @@ import api from "../api";
 import React from "react";
 import '../styles/basket.css';
 import Structure from "../components/Structure";
-import './dashboard.css';
+import '../styles/dashboard.css';
 import Tail from "../components/Tail";
 
 function Dashboard() {
