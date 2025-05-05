@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import React from "react";
-import '../styles/Basket.css';
+import '../styles/git commit -am "Fix: Changed filename case of Basket component to lowercase".css';
 import Structure from "../components/Structure";
 import Tail from "../components/Tail";
 function Charge() {

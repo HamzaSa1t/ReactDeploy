@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import React from "react";
-import '../styles/Basket.css';
+import '../styles/basket.css';
 import Structure from "../components/Structure";
 import Tail from "../components/Tail";
 function Charge() {
