@@ -12,15 +12,15 @@ return(
       <header className="header">   
         <h1>Amazoo</h1>
         <p className="tagline">We sell products you love!</p>
-        <p>
-          <Link to="/register">
-              Register
-            </Link>
-          </p>
     </header>  
      </div>
 <div className="backl"> 
 <LoginForm/>
+<p>
+          <Link to="/register">
+              Register
+            </Link>
+          </p>
 </div>
 <Tail />
 </div>    
