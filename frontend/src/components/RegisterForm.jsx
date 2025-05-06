@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/form.css";
 import LoadingIndicator from "./LoadingIndicator";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";  
-
+import { Link } from 'react-router-dom';
 
 function RegisterForm() {
     const [username, setUsername] = useState("");
@@ -116,6 +116,12 @@ function RegisterForm() {
             <button className="form-button" type="submit">
                 register
             </button>
+            <p>
+
+<Link to="/login">
+    Login
+  </Link>
+</p>
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </form>
 
