@@ -148,7 +148,8 @@ class CreateUserView(generics.CreateAPIView):
     @transaction.atomic # Check word doc
     def perform_create(self, serializer):
       try:  
-        user = serializer.save()                   
+        user = serializer.save()
+        profile_data = serializer.validated_data.get("profile_user", {}) # Get the nested data                   
         user_type = profile_data.get("user_type")
         
         if not user_type:
