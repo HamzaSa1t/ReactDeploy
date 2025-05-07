@@ -78,10 +78,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
 ]
-
+""" 
+added api, rest_framework, corsheaders.
+"""
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,7 +90,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
+"""
+- we added corsheaders to middleware.
+- middleware is a framework that allows you to process requests and responses globally before they reach a view or after they leave a view. Modify, authenticate, or validate incoming HTTP requests before they reach the view.
+- The corsheaders.middleware.CorsMiddleware in Django is used to handle Cross-Origin Resource Sharing (CORS). (Cross-Origin Resource Sharing) is a security mechanism that allows or restricts resources (e.g., APIs, static files) on your server to be accessed by client applications from a different domain.
+"""
 
 ROOT_URLCONF = 'amazoo.urls'
 
@@ -122,8 +129,23 @@ DATABASES = {
     }
 }
 
+"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        "USER": os.getenv('DB_USER'),
+        "PASSWORD": os.getenv('DB_PWD'),
+        "HOST": os.getenv('DB_HOST'),
+        "PORT": os.getenv('DB_PORT'),
+    }
+}
+
+"""
+
 # This will ensure a separate test database is used
-DATABASES['default']['NAME'] = 'test_mydb'  # Django automatically creates a test version of your database.
+#['default']['NAME'] = 'test_mydb'  # Django automatically creates a test version of your database.
 
 
 # Password validation
@@ -168,21 +190,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CORS_ALLOW_ALL_ORIGINS = False
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWS_CREDENTIALS = True
+"""
+WE ADDED THOSE FUNCTIONS AND MADE THEM = TRUE.
+"""
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:5175",
-    "https://react-deploy-wt6b.vercel.app",
+    "http://localhost:5173", # or the correct port for your react app.
+    "http://localhost:5175"
 ]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://react-deploy-wt6b.vercel.app",
-    "https://amazoo4.onrender.com"
-]
-
 
 CORS_ALLOW_CREDENTIALS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -191,3 +207,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'amazoowebsite@gmail.com'
 EMAIL_HOST_PASSWORD = 'wrhh zbnl vqek xnqn'  
+
+
+
