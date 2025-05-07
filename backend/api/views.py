@@ -121,7 +121,7 @@ class IsManagerOrEmployee(BasePermission):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny] #### ###### !!!1
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
@@ -626,7 +626,7 @@ class RateProduct(generics.UpdateAPIView):
 class ListProducts(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [AllowAny]  #### ### !!!
+    permission_classes = [IsAuthenticated] 
 
 
 class CreateProduct(generics.CreateAPIView):

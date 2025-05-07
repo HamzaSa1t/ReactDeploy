@@ -8,7 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['user_type']
 
 class UserSerializer(serializers.ModelSerializer):
-    profile_user = ProfileSerializer()  # Nested 
+    profile_user = ProfileSerializer(read_only=True)  # Nested 
 
     class Meta:
         model = User
