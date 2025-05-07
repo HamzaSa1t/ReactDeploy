@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import "../components/Tail.jsx";
 import Tail from "../components/Tail.jsx";
 import waiting from "../components/waiting.jsx";
-
+import { ACCESS_TOKEN } from "../constants"
 
 function Home() {
     const { pk } = useParams();
@@ -50,6 +50,11 @@ function Home() {
 
     const getProducts = async () => {
         try {
+
+            const token = localStorage.getItem(ACCESS_TOKEN);
+            console.log("Authorization Header:", token ? `Bearer ${token}` : "No token");
+
+
             const response = await api.get("api/products/list/");
             if (response.data && response.data.length) {
                 setProducts(response.data); 
